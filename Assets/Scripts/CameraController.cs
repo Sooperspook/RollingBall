@@ -4,21 +4,38 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour {
 
-    public GameObject player;
+    
+    public Transform lookAtPlayer, baseTransform;
+    public float slerpRate = 1;
+    public float distLerpRate = 1;
+    public float minDist = 10, maxDist = 20;
 
-    // this is the difference between the players position and the cameras position
-    private Vector3 offset;
-
-	
-	void Start () {
-        
-        offset = transform.position - player.transform.position;
-            	
-	}
 	
 	
 	void LateUpdate () {
-        // moves the camera with the player object
-        transform.position = player.transform.position + offset;
-	}
+        AdjustDistance();
+        AdjustView();
+    }
+
+    void AdjustDistance()
+    {
+        var dir = lookAtPlayer.position - baseTransform.position;
+        dir.y = 0;
+
+        var dirLen = dir.magnitude;
+        dir /= dirLen;
+
+        var constrainedDist = Mathf.Clamp(dirLen, minDist, maxDist);
+        var stepDist = Mathf.LerpUnclamped(dirLen, constrainedDist, Time.deltaTime * distLerpRate);
+
+        baseTransform.position = lookAtPlayer.position - dir * stepDist;
+    }
+
+    void AdjustView()
+    {
+        var dir = lookAtPlayer.position - transform.position;
+        dir = dir.normalized;
+        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(dir), slerpRate * Time.deltaTime);
+    }
 }
+

@@ -7,11 +7,7 @@ EditorBuildSettings:
   m_Scenes:
   - enabled: 1
     path: Assets/_Scenes/SplashScreen.unity
+    guid: c42a2870174733e43b30c3c12f645052
   - enabled: 1
-    path: Assets/_Scenes/MainMenu.unity
-  - enabled: 1
-    path: Assets/_Scenes/HeavenLevel.unity
-  - enabled: 1
-    path: Assets/_Scenes/EarthLevel.unity
-  - enabled: 1
-    path: Assets/_Scenes/HellLevel.unity
+    path: Assets/_Scenes/LevelOne.unity
+    guid: 883cb00e397c6744a9e139c55cb0f8d5

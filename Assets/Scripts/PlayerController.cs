@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class PlayerController : MonoBehaviour {
 
     public float torqueSpeed;
- 
+    public Vector3 previousTorque;
     public Text countText;
     public Text winText;
 
@@ -18,21 +18,28 @@ public class PlayerController : MonoBehaviour {
         player = GetComponent<Rigidbody>();
         count = 0;
         SetCountText ();
-        winText.text = "";
+        winText.text = "Woot";
     }
 
 void FixedUpdate ()
     {
 
         // Using torque to move the player.
-        // moveForeward also moves backward, moveTurn causes it to spin
-        // problem: once it starts moving, because axes move, hard to control
+       
+        var inputRot = Camera.main.transform.rotation;
+        var tmp = inputRot.eulerAngles;
 
-        float moveForeward = Input.GetAxis("Vertical");
-        player.AddTorque(transform.forward * torqueSpeed * moveForeward);
+        tmp.x = 0;
+        tmp.z = 0;
+        inputRot = Quaternion.Euler(tmp);
 
-        float moveTurn = Input.GetAxis("Horizontal");
-        player.AddTorque(transform.up * torqueSpeed * moveTurn);
+        var torqueDir = new Vector3(Input.GetAxis("Vertical"), 0, -Input.GetAxis("Horizontal")).normalized;
+        torqueDir = inputRot * torqueDir;
+
+        previousTorque = torqueDir * torqueSpeed;
+
+        player.AddTorque(previousTorque);
+
     }
 
     // Upon touching another object, test what kind of object and act accordingly
